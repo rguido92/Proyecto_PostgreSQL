@@ -48,7 +48,7 @@ CREATE TABLE Partidos (
 
 
 INSERT INTO objetos.Jugadores (datos_personales,jugador_info,equipo_id) VALUES(
-    ROW('Juan',30),ROW(10, 'Delantero', 1.75),1
+    ROW('Juan',30),ROW(10, 'Delantero', 1.75),13
     );
 
 INSERT INTO objetos.Equipos (equipo_info) VALUES(
@@ -68,7 +68,7 @@ INSERT INTO objetos.Equipos (equipo_info) VALUES(
 	
 );
 
-INSERT INTO objetos.Partidos (date,equipo_local_id,equipo_visitante_id) VALUES(
-    '13-03-2022',1,2
+INSERT INTO objetos.Partidos (fecha,equipo_local_id,equipo_visitante_id) VALUES(
+    '1989-02-13',1,2
 	
 );
