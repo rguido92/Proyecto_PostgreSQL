@@ -1,100 +1,136 @@
-Proyecto de Gestión de Base de Datos de Fútbol
+# ⚽ Gestión de Base de Datos de Fútbol — Java + Hibernate + PostgreSQL
 
-En este proyecto se pide crear una base de datos PostgreSQL denominada futbol y un programa Java que permita manejar y gestionar dicha base de datos utilizando Hibernate.
-Descripción del Proyecto
+Aplicación backend en **Java** para gestionar una base de datos de fútbol: jugadores, equipos y partidos. Implementa la capa de persistencia con **Hibernate/JPA** sobre **PostgreSQL**, siguiendo la arquitectura **DAO + Service**.
 
-El objetivo principal es gestionar una base de datos de fútbol, incluyendo jugadores, equipos y partidos. El modelo relacional de la base de datos se describe a continuación.
-Entidades y Relaciones
+> 🎯 Proyecto de la asignatura **Acceso a Datos** — CFGS DAM · IES Teis 2022–2024
 
-    Jugadores
-        jugador_id: tipo serial y clave primaria
-        datos_personales: de tipo Persona
-        jugador_info: de tipo Jugador
+---
 
-    Equipos
-        equipo_id: tipo serial y clave primaria
-        equipo_info: de tipo Equipo
+## ✨ Funcionalidades
 
-    Partidos
-        partido_id: tipo serial y clave primaria
-        fecha: tipo fecha
-        Relación varios a 1 con Equipos (equipo_local)
-        Relación varios a 1 con Equipos (equipo_visitante)
+- 🏃 CRUD completo de **jugadores** (datos personales + datos deportivos)
+- 🏟️ CRUD completo de **equipos** (nombre, ciudad, entrenador)
+- 📅 Gestión de **partidos**: equipo local, visitante y fecha
+- 🔗 Relaciones entre entidades gestionadas por Hibernate (ManyToOne, OneToOne, Embedded)
+- 📝 Logging con **Log4j**
 
-Objetos
+---
 
-    Persona
-        nombre: tipo varchar
-        edad: tipo entero
+## 🛠️ Stack tecnológico
 
-    Jugador
-        dorsal: tipo entero
-        posicion: tipo varchar
-        altura: tipo decimal
+| Capa | Tecnología |
+|------|-----------|
+| Lenguaje | Java 17 |
+| ORM / Persistencia | Hibernate 6 / JPA |
+| Base de datos | PostgreSQL |
+| Logging | Log4j |
+| Build | Maven |
+| Config Hibernate | hibernate.cfg.xml |
 
-    Equipo
-        nombre: tipo varchar
-        ciudad: tipo varchar
-        entrenador: tipo Persona
-Estructura del Proyecto
-├── src
-│   ├── main
-│   │   ├── java
-│   │   │   └── com
-│   │   │       └── proyecto
-│   │   │           ├── dao
-│   │   │           │   ├── EquipoDao.java
-│   │   │           │   ├── JugadorDao.java
-│   │   │           │   └── PartidoDao.java
-│   │   │           ├── model
-│   │   │           │   ├── Equipo.java
-│   │   │           │   ├── Jugador.java
-│   │   │           │   ├── Partido.java
-│   │   │           │   └── Persona.java
-│   │   │           ├── service
-│   │   │           │   ├── EquipoService.java
-│   │   │           │   ├── JugadorService.java
-│   │   │           │   └── PartidoService.java
-│   │   │           ├── util
-│   │   │           │   └── HibernateUtil.java
-│   │   │           └── Main.java
-│   └── resources
-│       ├── hibernate.cfg.xml
-│       └── log4j.properties
-└── pom.xml
+---
 
-Descripción de los Componentes
-DAO
+## 🗄️ Modelo de datos
 
-    EquipoDao.java: DAO para las operaciones CRUD de Equipo.
-    JugadorDao.java: DAO para las operaciones CRUD de Jugador.
-    PartidoDao.java: DAO para las operaciones CRUD de Partido.
+```
+Jugador (@Entity)
+├── jugador_id          PK serial
+├── datos_personales    @Embedded → Persona (nombre, edad)
+└── jugador_info        @Embedded → JugadorInfo (dorsal, posicion, altura)
 
-Modelo
+Equipo (@Entity)
+├── equipo_id           PK serial
+└── equipo_info         @Embedded → EquipoInfo (nombre, ciudad, entrenador→Persona)
 
-    Equipo.java: Clase que representa a un equipo.
-    Jugador.java: Clase que representa a un jugador.
-    Partido.java: Clase que representa a un partido.
-    Persona.java: Clase que representa a una persona.
+Partido (@Entity)
+├── partido_id          PK serial
+├── fecha               Date
+├── equipo_local        @ManyToOne → Equipo
+└── equipo_visitante    @ManyToOne → Equipo
+```
 
-Servicios
+---
 
-    EquipoService.java: Servicio para las operaciones de negocio relacionadas con los equipos.
-    JugadorService.java: Servicio para las operaciones de negocio relacionadas con los jugadores.
-    PartidoService.java: Servicio para las operaciones de negocio relacionadas con los partidos.
+## 📁 Estructura del proyecto
 
-Utilidades
+```
+Proyecto_PostgreSQL/
+└── Proyecto_posgresql-main/
+    └── src/
+        ├── main/
+        │   ├── java/com/proyecto/
+        │   │   ├── dao/
+        │   │   │   ├── EquipoDao.java       ← CRUD Equipo via Hibernate
+        │   │   │   ├── JugadorDao.java      ← CRUD Jugador via Hibernate
+        │   │   │   └── PartidoDao.java      ← CRUD Partido via Hibernate
+        │   │   ├── model/
+        │   │   │   ├── Equipo.java
+        │   │   │   ├── Jugador.java
+        │   │   │   ├── Partido.java
+        │   │   │   └── Persona.java         ← Embeddable
+        │   │   ├── service/
+        │   │   │   ├── EquipoService.java
+        │   │   │   ├── JugadorService.java
+        │   │   │   └── PartidoService.java
+        │   │   ├── util/
+        │   │   │   └── HibernateUtil.java   ← SessionFactory singleton
+        │   │   └── Main.java
+        │   └── resources/
+        │       ├── hibernate.cfg.xml        ← Config conexión + dialect
+        │       └── log4j.properties
+        └── pom.xml
+```
 
-    HibernateUtil.java: Clase de utilidad para manejar la configuración de Hibernate.
+---
 
-Main
+## 🚀 Cómo ejecutar
 
-    Main.java: Clase principal que inicia la aplicación.
+### Requisitos
+- Java 17+
+- PostgreSQL 14+
+- Maven
 
-Herramientas Utilizadas
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/rguido92/Proyecto_PostgreSQL.git
+cd Proyecto_PostgreSQL/Proyecto_posgresql-main
 
-    Hibernate: Para la capa de persistencia.
-    PostgreSQL: Como sistema de gestión de bases de datos.
-    Java: Para la implementación de la lógica de negocio y la interacción con la base de datos.
-    Maven: Para la gestión del proyecto y sus dependencias.
-    Log4j: Para el manejo de logs en la aplicación.
+# 2. Crear la base de datos
+psql -U postgres -c "CREATE DATABASE futbol;"
+
+# 3. Configurar hibernate.cfg.xml
+# <property name="connection.url">jdbc:postgresql://localhost:5432/futbol</property>
+# <property name="connection.username">tu_usuario</property>
+# <property name="connection.password">tu_password</property>
+# <property name="hbm2ddl.auto">update</property>   ← crea tablas automáticamente
+
+# 4. Compilar y ejecutar
+mvn compile
+mvn exec:java -Dexec.mainClass="com.proyecto.Main"
+```
+
+Hibernate creará el esquema automáticamente en el primer arranque (`hbm2ddl.auto=update`).
+
+---
+
+## 🧪 Tests
+
+```bash
+mvn test
+```
+
+---
+
+## 💡 Conceptos aplicados
+
+- **Hibernate ORM**: mapeo de entidades con anotaciones JPA (`@Entity`, `@Table`, `@Column`, `@ManyToOne`, `@Embedded`)
+- **SessionFactory**: gestión del ciclo de vida de sesiones Hibernate
+- **Patrón DAO + Service**: separación entre persistencia y lógica de negocio
+- **Objetos embebidos**: reutilización de `Persona` como `@Embeddable` en Jugador y Equipo
+- **Log4j**: trazabilidad de operaciones sobre la base de datos
+
+---
+
+## 👤 Autor
+
+**Rodrigo Guido** — Desarrollador Backend Java  
+[LinkedIn](https://www.linkedin.com/in/rodrigo-guido92) · [GitHub](https://github.com/rguido92) · rodrigoguidoarias@gmail.com
